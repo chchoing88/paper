@@ -1,16 +1,16 @@
 const fs = require('fs');
 
 class SimpleDatabase {
-  constructor (config) {
+  constructor(config) {
     this._config = {};
     this.setConfig(config);
   }
 
-  setConfig (config) {
+  setConfig(config) {
     this._config = config;
   }
 
-  getConfig () {
+  getConfig() {
     return this._config;
   }
 
@@ -18,7 +18,7 @@ class SimpleDatabase {
    * 테이블 목록에 해당하는 json 파일을 로드합니다
    * @param {array} tableList Table name list
    */
-  load (tableList) {
+  load(tableList) {
     this.table = {};
     this.model = {};
     this._index = {};
@@ -36,7 +36,7 @@ class SimpleDatabase {
    * @param {string} tableName
    * @param {array} tableData
    */
-  _createIndex (tableName, tableData) {
+  _createIndex(tableName, tableData) {
     const indexedDataMap = new Map();
 
     tableData.forEach((data) => {
@@ -51,7 +51,7 @@ class SimpleDatabase {
    * @param {string} tableName
    * @param {object} config
    */
-  _validate (tableName, config) {
+  _validate(tableName, config) {
     const model = this.model[tableName];
     const { where, data, offset, limit } = config || {};
 
@@ -88,7 +88,7 @@ class SimpleDatabase {
    * 해당 옵션에 offset 또는 limit이 있는지 확인
    * @param {object} config
    */
-  _hasOffsetOrLimit (config) {
+  _hasOffsetOrLimit(config) {
     return config.offset !== undefined || config.limit !== undefined;
   }
 
@@ -110,7 +110,7 @@ class SimpleDatabase {
    * @param {string} tableName
    * @param {object} config
    */
-  select (tableName, config) {
+  select(tableName, config) {
     const { where } = config || {};
     const keys = Object.keys(where || {});
     const list = [];
@@ -156,7 +156,7 @@ class SimpleDatabase {
 
     if (list.length === 0) {
       return [];
-    } else  {
+    } else {
       if (config.offset !== undefined && config.limit !== undefined) {
         return list.reverse().splice(config.offset, config.limit);
       } else if (config.offset !== undefined) {
@@ -174,7 +174,7 @@ class SimpleDatabase {
    * @param {string} tableName
    * @param {object} config
    */
-  insert (tableName, config) {
+  insert(tableName, config) {
     if (config && !config.data) {
       throw new Error('삽입 데이터가 존재하지 않습니다.');
     }
@@ -208,7 +208,7 @@ class SimpleDatabase {
    * @param {string} tableName
    * @param {object} config
    */
-  update (tableName, config) {
+  update(tableName, config) {
     const _config = config || {};
     if (this._hasOffsetOrLimit(_config)) {
       throw new Error('update는 offset 또는 limit 옵션을 사용할 수 없습니다.');
@@ -223,7 +223,7 @@ class SimpleDatabase {
       return {};
     }
 
-    for (let row of Array.isArray(rows) ? rows : [ rows ]) {
+    for (let row of Array.isArray(rows) ? rows : [rows]) {
       const updateData = Object.assign({}, row);
       for (let k of keys) {
         if (updateData[k] !== undefined) {
@@ -251,7 +251,7 @@ class SimpleDatabase {
    * @param {string} tableName
    * @param {object} config
    */
-  upsert (tableName, config) {
+  upsert(tableName, config) {
     if (this._hasOffsetOrLimit(config)) {
       throw new Error('upsert는 offset 또는 limit 옵션을 사용할 수 없습니다.');
     }
@@ -263,7 +263,7 @@ class SimpleDatabase {
       return this.insert(tableName, config);
     }
 
-    rows = Array.isArray(rows) ? rows : [ rows ];
+    rows = Array.isArray(rows) ? rows : [rows];
 
     if (rows.length !== 0) {
       return this.update(tableName, config);
@@ -278,7 +278,7 @@ class SimpleDatabase {
    * @param {string} tableName
    * @param {object} config
    */
-  delete (tableName, config) {
+  delete(tableName, config) {
     if (this._hasOffsetOrLimit(config)) {
       throw new Error('delete는 offset 또는 limit 옵션을 사용할 수 없습니다.');
     }
@@ -290,7 +290,7 @@ class SimpleDatabase {
       return {};
     }
 
-    rows = Array.isArray(rows) ? rows : [ rows ];
+    rows = Array.isArray(rows) ? rows : [rows];
 
     for (let { id } of rows) {
       this.table[tableName].delete(id);
@@ -311,7 +311,7 @@ class SimpleDatabase {
   /**
    * 메모리에 저장된 데이터를 json 파일로 저장합니다
    */
-  commit () {
+  commit() {
     const tableList = Object.keys(this.table);
     tableList.forEach((tableName) => {
       const list = [];

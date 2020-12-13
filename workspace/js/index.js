@@ -40,7 +40,7 @@ $(function () {
           app.renderPost(post, {
             onFavorite,
             onDelete,
-            prepend: true
+            prepend: true,
           });
 
           // @ch6. IndexedDB에 게시물 데이터 저장
@@ -58,17 +58,18 @@ $(function () {
   });
 
   // 게시물 목록 업데이트
-  function updatePostList () {
+  function updatePostList() {
     app.clearPost();
     // 게시물 가져오기
-    return axios.get('/api/posts')
+    return axios
+      .get('/api/posts')
       .then((response) => {
         const posts = response.data;
 
         // 게시물 화면에 렌더링
         app.renderPost(posts, {
           onFavorite,
-          onDelete
+          onDelete,
         });
 
         // @ch6. IndexedDB에 게시물 데이터 저장
@@ -79,36 +80,35 @@ $(function () {
   }
 
   // 동기화 작업 목록 업데이트
-  function updateJobList () {
+  function updateJobList() {
     // @ch8. IndexedDB 작업 데이터 조회 및 화면에 표시
   }
 
   // 게시물 업로드
-  function uploadPost (title, content, image) {
+  function uploadPost(title, content, image) {
     const formData = new FormData();
     formData.append('user', userName);
     formData.append('title', title);
     formData.append('content', content);
     formData.append('image', image);
 
-    return axios.post('/api/posts', formData)
-      .then((response) => response.data);
+    return axios.post('/api/posts', formData).then((response) => response.data);
   }
 
   // 게시물 수정 (좋아요)
-  function updatePost (id, state) {
-    return axios.put('/api/posts/' + id, { state })
+  function updatePost(id, state) {
+    return axios
+      .put('/api/posts/' + id, { state })
       .then((response) => response.data);
   }
 
   // 게시물 삭제
-  function deletePost (id) {
-    return axios.delete('/api/posts/' + id)
-      .then((response) => response.data);
+  function deletePost(id) {
+    return axios.delete('/api/posts/' + id).then((response) => response.data);
   }
 
   // 좋아요 핸들러
-  function onFavorite (id, state) {
+  function onFavorite(id, state) {
     updatePost(id, state)
       .then(() => {
         // @ch6. IndexedDB 게시물 좋아요 상태 갱신
@@ -119,7 +119,7 @@ $(function () {
   }
 
   // 게시물 삭제 이벤트 핸들러
-  function onDelete (id) {
+  function onDelete(id) {
     app.showLoading(true);
     deletePost(id)
       .then((post) => {
@@ -136,50 +136,48 @@ $(function () {
   }
 
   // 동기화 작업 취소 핸들러
-  function onCancel (jobId) {
+  function onCancel(jobId) {
     // @ch8. 작업 삭제
   }
 
   // 대기 중인 작업 수행
-  function doJobs () {
+  function doJobs() {
     // @ch8. 대기중인 작업 수행
   }
 
   // 백그라운드 동기화 작업 요청
-  function requestBackgroundSync () {
+  function requestBackgroundSync() {
     // @ch8. 백그라운드 동기화 작업 등록
   }
 
   // 서비스 워커에게 메시지 전달
-  function toServiceWorker (action, payload) {
+  function toServiceWorker(action, payload) {
     // @ch9. 메시지 전달을 통해 서비스 워커에게 작업 요청
   }
 
   // 푸시 구독
-  function pushSubscribe () {
+  function pushSubscribe() {
     // @ch10. 푸시 구독 기능 구현
   }
 
   // 푸시 구독 취소
-  function pushUnsubscribe () {
+  function pushUnsubscribe() {
     // @ch10. 푸시 구독 취소 기능 구현
   }
 
   // 구독 정보 서버로 전달
-  function updateSubscription (subscription) {
+  function updateSubscription(subscription) {
     // @ch10. 푸시 구독 정보 전송 기능 구현
   }
 
   // 구독 상태에 따라 버튼 스타일 변경
-  function updatePushButton () {
+  function updatePushButton() {
     // @ch10. 푸시 구독 상태에 따라 버튼 갱신 기능 구현
   }
 
   // Paper 초기 로딩
-  (function init () {
-    Promise.all([
-      updatePostList()
-    ]);
+  (function init() {
+    Promise.all([updatePostList()]);
   })();
 
   // @ch9. 서비스 워커 메시지 이벤트 핸들러 구현
